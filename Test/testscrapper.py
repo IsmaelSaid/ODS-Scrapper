@@ -1,6 +1,6 @@
 import unittest
 import ScrappingPackage
-from ScrappingPackage import Opendatasoftscrapper
+from ScrappingPackage.opendatasoftscrapper import Opendatasoftscrapper
 
 
 class TestOpenDataSoftScrapper(unittest.TestCase):
@@ -10,7 +10,7 @@ class TestOpenDataSoftScrapper(unittest.TestCase):
         This class makes some basics tests
         """
         url = "https://data.regionreunion.com/"
-        self.scp = CustomScrapper(url = url)
+        self.scp = Opendatasoftscrapper(url = url)
 
     
     def test_create_url_catalog_export_endpoint(self):
