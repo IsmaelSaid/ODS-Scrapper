@@ -14,7 +14,7 @@ class Opendatasoftscrapper:
         FACETS_ENDPOINT
     ]
 
-    def __init__(self, url : str):
+    def __init__(self, url : str, estimated_population : int = -1):
         """
         This class holds various methods to scrap easily open data portals with few lines of code. 
 
@@ -22,8 +22,10 @@ class Opendatasoftscrapper:
             url (str): url of the portal : ex https://data.regionreunion.com
         """
         self.url = url
+        self.estimated_population = estimated_population
 
     def get_catalog_json(self,params : dict) -> json:
+        # TODO : I have to count how many times this function is called
         """
         a method to scrapp the catalog 
 
@@ -77,6 +79,7 @@ class Opendatasoftscrapper:
         return endpoint in self.VALID_ENDPOINTS
 
     def get_facets_json(self, params : dict = {"timezone":"UTC"}, pos_facets : int = 0) -> json :
+        # TODO : I have to count how many times this function is called
         created_url = self.create_url("catalog/facets/")
         response = requests.get(
             url = created_url,
@@ -192,14 +195,40 @@ class Opendatasoftscrapper:
 
     def get_all_results(self) -> dict:
         """
-        # TODO calculate the number of dataset/personn
-
         Returns:
             dict: return a dict holding, the number of federated/unfederated dataset and the rate of fed/unfed dataset.
         """
+
+        nb_federated = self.count_federated_dataset()
+        nb_not_federated = self.count_not_federated_dataset()
+        ods_metrics = Opendatasoftmetrics(nb_federated, nb_not_federated, self.estimated_population)
+        
         results = dict()
         results['nb_federated_and_not_federated_df'] = self.get_federated_and_not_federated_df()
         results['nb_dataset_per_theme_df'] = self.get_facets_pandas()
         results['rate_federated_on_not_federated'] = self.get_federated_on_not_federated_rate()
+        results['mhs_metric'] = ods_metrics.calculate_mhs_metrics()
 
         return results
+
+class Opendatasoftmetrics:
+    def __init__(self, nb_federated, nb_not_federated, estimated_population):
+        self.nb_federated = nb_federated
+        self.nb_not_federated = nb_not_federated
+        self.estimated_population = estimated_population
+
+    def calculate_mhs_metrics(self) -> float:
+        """
+        this function calculates the number of dataset per habitant, suggestion of Mickael
+        Args:
+
+        Returns:
+            float: the number of dataset / habitant
+        """
+
+        nb_dataset_per_habitant = (self.nb_federated + self.nb_not_federated) / self.estimated_population
+        return nb_dataset_per_habitant
+
+    def calculate_fed_undef_ratio(self):
+        # TODO
+        pass 
