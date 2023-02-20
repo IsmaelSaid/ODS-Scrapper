@@ -24,6 +24,9 @@ class Opendatasoftscrapper:
         self.url = url
         self.estimated_population = estimated_population
 
+        self.federated_dataset = self.get_federated_dataset_json()
+        self.not_federate_dataset = self.get_not_federated_dataset_json()
+        self.facets = self.get_facets_json()
     def get_catalog_json(self,params : dict) -> json:
         # TODO : I have to count how many times this function is called
         """
@@ -92,9 +95,8 @@ class Opendatasoftscrapper:
         Returns:
             DataFrame: return a datafram holding the number of dataset by theme
         """
-        facet_json = self.get_facets_json()
         facets_df = DataFrame(
-            facet_json.get('facets')[0].get('facets')
+            self.facets.get('facets')[0].get('facets')
         )
         return facets_df
 
@@ -142,8 +144,7 @@ class Opendatasoftscrapper:
         Returns:
             int: the number of federated dataset
         """
-        federated_dataset = self.get_federated_dataset_json()
-        return len(federated_dataset)
+        return len(self.federated_dataset)
     
     def count_not_federated_dataset(self) -> int:
         """
@@ -152,8 +153,7 @@ class Opendatasoftscrapper:
         Returns:
             int: number of unfederated dataset
         """
-        not_federated_dataset = self.get_not_federated_dataset_json()
-        return len(not_federated_dataset)
+        return len(self.not_federate_dataset)
 
     def count_dataset(self) -> int :
         """
@@ -162,7 +162,7 @@ class Opendatasoftscrapper:
         Returns:
             int: _description_
         """
-        return self.count_federated_dataset() + count_not_federated_dataset
+        return self.count_federated_dataset() + self.count_not_federated_dataset()
 
     def get_federated_and_not_federated_df(self) -> DataFrame:
         """
@@ -229,6 +229,11 @@ class Opendatasoftmetrics:
         nb_dataset_per_habitant = (self.nb_federated + self.nb_not_federated) / self.estimated_population
         return nb_dataset_per_habitant
 
-    def calculate_fed_undef_ratio(self):
-        # TODO
-        pass 
+    def calculate_ratio_metrics(self) -> float:
+        """
+        this function calculates the ratio between the number of federated dataset & the number of unfederated dataset
+
+        Return:
+
+        """
+        return (self.nb_not_federated * 100 / (self.nb_federated + self.nb_not_federated)) 
