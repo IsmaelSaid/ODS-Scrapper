@@ -1,5 +1,6 @@
 from ScrappingPackage.opendatasoftvisualisations import Opendatasoftvisualisations, Opendatasoftvisualisations_aggregated
 from ScrappingPackage.opendatasoftscrapper import Opendatasoftscrapper
+from ScrappingPackage.tools import Wordprocessing
 import pandas as pd
 import argparse
 from tqdm import tqdm
@@ -26,6 +27,7 @@ if __name__ == '__main__':
     
     mhs_metrics = dict()
     ratio_metrics = dict()
+    themes = dict()
     for _ , row in portails_references.iterrows():
         lien = row['lien']
         population = row['population']
@@ -36,6 +38,7 @@ if __name__ == '__main__':
         scrapping_results = ods_scrapper.get_all_results()
         fed_rate = scrapping_results.get("rate_federated_on_not_federated")
         mhs_metrics[lien] = scrapping_results["mhs_metric"]
+        themes[lien] = scrapping_results["themes"]
 
         # TODO 
         ratio_metrics[lien] = scrapping_results["rate_federated_on_not_federated"]
@@ -62,3 +65,8 @@ if __name__ == '__main__':
         bar_plot_ratio_metric_filename = "metric:ratio"+'.pdf'
         bar_plot_ratio_metric_title = "federated/unfederated"
         ods_agg_vis.bar_plot_ratio_metrics(save= True,title=bar_plot_ratio_metric_title,filename=bar_plot_ratio_metric_filename)
+    
+    # Affichage du dictionnaire de thème
+    wp = Wordprocessing(themes)
+    themes_counts = wp.get_words_counts_df()
+    themes_counts.to_csv("themes.csv",index=False)
