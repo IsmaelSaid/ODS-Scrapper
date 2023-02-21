@@ -121,5 +121,12 @@ class TestOpenDataSoftScrapper(unittest.TestCase):
         expected_rate =  75 / 96
         self.assertEquals(True, True)
 
+    def test_get_all_themes(self):
+        """
+        This test checks that gell_all_themes is able to retrieve all themes in an open data portal
+        """
+        expected = ['Administration et citoyenneté', 'Aménagement durable du territoire', 'Culture et patrimoine', 'Développement économique', 'Economy, Business, SME, Economic development, Employment', 'Environnement', 'Référentiel géographique', 'Santé', 'Services et social', 'Sport et loisirs', 'Sécurité', 'Tourisme - Hébergement et restauration', 'Transports et déplacements', 'Éducation - Formation']
+        result = self.scp.get_all_themes()
+        self.assertEqual(expected, result,msg = "Themes are incorrect")
 if __name__ == '__main__':
     unittest.main()

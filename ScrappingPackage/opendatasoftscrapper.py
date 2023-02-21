@@ -208,7 +208,19 @@ class Opendatasoftscrapper:
         results['nb_dataset_per_theme_df'] = self.get_facets_pandas()
         results['rate_federated_on_not_federated'] = self.get_federated_on_not_federated_rate()
         results['mhs_metric'] = ods_metrics.calculate_mhs_metrics()
+        results['themes'] = self.get_all_themes()
+        return results
 
+    def get_all_themes(self) -> list:
+        """
+        # TODO This function has to be re written
+        This function return all themes
+
+        Returns:
+            list: All themes packed in a list
+        """
+        all_facets = self.facets.get("facets")
+        results = [i['value'] for i in all_facets[0].get("facets")]
         return results
 
 class Opendatasoftmetrics:
