@@ -219,9 +219,29 @@ class Opendatasoftscrapper:
         Returns:
             list: All themes packed in a list
         """
+        index = self.find_index_for_themes()
         all_facets = self.facets.get("facets")
-        results = [i['value'] for i in all_facets[0].get("facets")]
+        results = [i['value'] for i in all_facets[index].get("facets")]
         return results
+
+    def find_index_for_themes(self) -> int:
+        """
+        This method returns the index of the facets that holding all themes. 
+
+        Args:
+            facets (_type_): 
+        Returns:
+            int: integer of the theme's facet
+        """
+        all_facets = self.facets.get("facets")
+        index = 0 
+
+        # In the case themes are not in the facet. gfy
+
+        while (index < len(all_facets) and all_facets[index].get("name") != "theme"):
+            index = index + 1
+        return index
+
 
 class Opendatasoftmetrics:
     def __init__(self, nb_federated, nb_not_federated, estimated_population):

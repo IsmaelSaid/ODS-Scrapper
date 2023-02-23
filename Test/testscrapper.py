@@ -128,5 +128,26 @@ class TestOpenDataSoftScrapper(unittest.TestCase):
         expected = ['Administration et citoyenneté', 'Aménagement durable du territoire', 'Culture et patrimoine', 'Développement économique', 'Economy, Business, SME, Economic development, Employment', 'Environnement', 'Référentiel géographique', 'Santé', 'Services et social', 'Sport et loisirs', 'Sécurité', 'Tourisme - Hébergement et restauration', 'Transports et déplacements', 'Éducation - Formation']
         result = self.scp.get_all_themes()
         self.assertEqual(expected, result,msg = "Themes are incorrect")
+
+
+    def test_find_themes_index_facet_1(self):
+        url1  = "https://data.regionreunion.com/" # index 0 
+        test_1 = Opendatasoftscrapper(url = url1)
+        expected = 0 
+        result = test_1.find_index_for_themes()
+
+        self.assertEqual(expected, result)
+
+
+
+    def test_find_themes_index_facet_2(self):
+        url2 = "https://data.laregion.fr/" # index 1 
+        test_2 = Opendatasoftscrapper(url = url2)
+        expected = 1 
+        result = test_2.find_index_for_themes()
+
+        self.assertEqual(expected, result)
+
+
 if __name__ == '__main__':
     unittest.main()
