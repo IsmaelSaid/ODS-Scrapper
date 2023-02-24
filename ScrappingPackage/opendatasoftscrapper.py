@@ -242,6 +242,9 @@ class Opendatasoftscrapper:
             index = index + 1
         return index
 
+    def verify_themes_presence(self):
+        return self.find_index_for_themes() < len(self.facets.get("facets"))
+
 
 class Opendatasoftmetrics:
     def __init__(self, nb_federated, nb_not_federated, estimated_population):
