@@ -4,6 +4,8 @@ import pandas as pd
 import argparse
 from tqdm import tqdm
 
+import ScrappingPackage.tools as t
+
 parser = argparse.ArgumentParser()
 parser.add_argument("-t","--bar_plot_themes",required=False,default=False)
 parser.add_argument("-f","--bar_plot_fed_not_fed",required=False,default=False)
@@ -26,6 +28,7 @@ if __name__ == '__main__':
     
     mhs_metrics = dict()
     ratio_metrics = dict()
+    themes = dict()
     for _ , row in portails_references.iterrows():
         lien = row['lien']
         population = row['population']
@@ -33,12 +36,17 @@ if __name__ == '__main__':
         
         
         ods_scrapper = Opendatasoftscrapper(url=lien,estimated_population = population)
+
+        # if there is no themes skip
+
+        if(ods_scrapper.verify_themes_presence() == False):
+            continue
         scrapping_results = ods_scrapper.get_all_results()
+        
         fed_rate = scrapping_results.get("rate_federated_on_not_federated")
         mhs_metrics[lien] = scrapping_results["mhs_metric"]
-
-        # TODO 
         ratio_metrics[lien] = scrapping_results["rate_federated_on_not_federated"]
+        themes[lien] = scrapping_results["themes"]
 
         if (bar_plot_themes):
             # bar plot thèmes 
@@ -62,3 +70,5 @@ if __name__ == '__main__':
         bar_plot_ratio_metric_filename = "metric:ratio"+'.pdf'
         bar_plot_ratio_metric_title = "federated/unfederated"
         ods_agg_vis.bar_plot_ratio_metrics(save= True,title=bar_plot_ratio_metric_title,filename=bar_plot_ratio_metric_filename)
+
+t.words_summary(themes).to_csv("words_counts.csv",index=False)
