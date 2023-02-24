@@ -70,5 +70,3 @@ if __name__ == '__main__':
         bar_plot_ratio_metric_filename = "metric:ratio"+'.pdf'
         bar_plot_ratio_metric_title = "federated/unfederated"
         ods_agg_vis.bar_plot_ratio_metrics(save= True,title=bar_plot_ratio_metric_title,filename=bar_plot_ratio_metric_filename)
-
-t.words_summary(themes).to_csv("words_counts.csv",index=False)
