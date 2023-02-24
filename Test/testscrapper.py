@@ -148,6 +148,22 @@ class TestOpenDataSoftScrapper(unittest.TestCase):
 
         self.assertEqual(expected, result)
 
+    def test_verify_themes_presence_neg(self):
+        """
+        ods toulouse don't have themes facet so it should returns false
+        """
+        url1  = "https://data.toulouse-metropole.fr/" 
+        test1 = Opendatasoftscrapper(url = url1)
+
+        self.assertEqual(False,test1.verify_themes_presence())
+
+    def test_verify_themes_presence_pos(self):
+        """
+        ods region reunion don't have themes facet so it should returns True
+        """
+        url1  = "https://data.regionreunion.com/" 
+        test1 = Opendatasoftscrapper(url = url1)
+        self.assertEqual(True,test1.verify_themes_presence())
 
 if __name__ == '__main__':
     unittest.main()
