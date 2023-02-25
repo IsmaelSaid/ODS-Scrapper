@@ -31,17 +31,8 @@ def remove_accents(list_words : list) -> list:
     results = [u.unidecode(item) for item in list_words]
     return results
     
-def remove_stop_words(list_words)-> list: 
-    stopwords = [",","&","-","du","/"]
-    """
-    remove all stop words
 
-    Returns:
-        list: 
-    """
-    pass
-
-def get_words_counts_df(list_words):
+def words_summary(dict_of_list : dict):
     """
     Args:
         self (list_words): _description_
@@ -49,7 +40,21 @@ def get_words_counts_df(list_words):
     Returns:
         _type_: _description_
     """
-    # results = self.transform()
-    count_results = collections.Counter(results)
-    resutls_df = pd.DataFrame({"theme":count_results.keys(),"compte":count_results.values()})
-    return resutls_df
+    tmp = convert_dict_list_to_list(dict_of_list)
+    results = remove_accents(lower(tmp))
+    join_result = " ".join(results)
+
+    # TODO:Could be better, but it's fine. cf import re, re.sub()
+    stopwords = [",","&","-","/"]
+    for word in stopwords:
+        join_result = join_result.replace(word," ")
+    
+    
+    count_results = collections.Counter(join_result.split(" "))
+    resutls_df = pd.DataFrame(
+                            {"theme":count_results.keys(),
+                            "compte":count_results.values()})
+
+    # TODO: Could be better but it's fine, create 1 function to create a big string of themes,1 function to count words and a
+    # another to remove stop words.
+    return resutls_df, join_result
